@@ -1,0 +1,63 @@
+<div class="row">
+    <div class="col-xl-12">
+      <app-card cardTitle="User List" [options]="false" blockClass="table-border-style">
+        <div class="position-relative">
+          <button class="btn btn-primary" (click)="addUser()" style="position: absolute; top: -4rem; right: 0; cursor: pointer; z-index: 10;">
+            <i class="fas fa-plus"></i> Add User
+          </button>
+        </div>
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Image</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">1</th>
+                <td> <img src="assets/images/user/avatar-1.jpg" class="img-radius wid-40" alt="User-Profile-Image" /></td>
+                <td>John Doe</td>
+                <td>John gmail.com</td>
+                <td>Admin</td>
+                <td>
+                  <div class="d-flex">
+                    <button class="btn btn-light me-2" (click)="editUser(1)">
+                      <i class="fas fa-pencil-alt text-primary"></i>
+                    </button>
+                    <button class="btn btn-light" (click)="deleteUser(1)">
+                      <i class="fas fa-trash-alt text-danger"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <th scope="row">2</th>
+                <td> <img src="assets/images/user/avatar-1.jpg" class="img-radius wid-40" alt="User-Profile-Image" /></td>
+                <td>Micky Arthur</td>
+                <td>MickyArthur gmail.com</td>
+                <td>HOD</td>
+                <td>
+                  <div class="d-flex">
+                    <button class="btn btn-light me-2">
+                      <i class="fas fa-pencil-alt text-primary"></i>
+                    </button>
+                    <button class="btn btn-light">
+                      <i class="fas fa-trash-alt text-danger"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+          
+            </tbody>
+          </table>
+        </div>
+      </app-card>
+    </div>
+  </div>
+  

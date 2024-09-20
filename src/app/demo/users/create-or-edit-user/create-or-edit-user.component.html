@@ -1,0 +1,111 @@
+<div>
+  <div class="modal-header">
+    <h5 class="modal-title">{{ userId ? 'Edit User' : 'Add User' }}</h5>
+    <button type="button" class="btn-close" aria-label="Close" (click)="closeModal()"></button>
+  </div>
+
+  <div class="modal-body">
+    <!-- Image Preview -->
+    <div class="text-center mb-3">
+      <img [src]="imagePreview || 'https://via.placeholder.com/150'" class="img-thumbnail" width="150" height="150" />
+    </div>
+
+    <form [formGroup]="userForm" novalidate>
+      <!-- First Row: First Name & Last Name -->
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label for="firstName" class="form-label">First Name</label>
+          <input type="text" id="firstName" formControlName="firstName" class="form-control" placeholder="First Name" />
+          <div *ngIf="userForm.get('firstName')?.invalid && userForm.get('firstName')?.touched" class="text-danger">
+            First Name is required
+          </div>
+        </div>
+        <div class="col-md-6 mb-3">
+          <label for="lastName" class="form-label">Last Name</label>
+          <input type="text" id="lastName" formControlName="lastName" class="form-control" placeholder="Last Name" />
+        </div>
+      </div>
+
+      <!-- Second Row: Username & Password -->
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label for="username" class="form-label">Username</label>
+          <input type="text" id="username" formControlName="username" class="form-control" placeholder="Username" />
+          <div *ngIf="userForm.get('username')?.invalid && userForm.get('username')?.touched" class="text-danger">
+            Username is required
+          </div>
+        </div>
+        <div class="col-md-6 mb-3">
+          <label for="password" class="form-label">Password</label>
+          <div class="input-group">
+            <input
+              [type]="passwordVisible ? 'text' : 'password'"
+              id="password"
+              formControlName="password"
+              class="form-control"
+              placeholder="Password"
+            />
+            <button type="button" class="btn btn-outline-secondary" (click)="togglePasswordVisibility()">
+              <i [ngClass]="passwordVisible ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
+            </button>
+          </div>
+          <div *ngIf="userForm.get('password')?.invalid && userForm.get('password')?.touched" class="text-danger">
+            Password is required
+          </div>
+        </div>
+      </div>
+
+      <!-- Third Row: Email & Phone No -->
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label for="email" class="form-label">Email</label>
+          <input type="email" id="email" formControlName="email" class="form-control" placeholder="Email" />
+          <div *ngIf="userForm.get('email')?.invalid && userForm.get('email')?.touched" class="text-danger">
+            A valid email is required
+          </div>
+        </div>
+        <div class="col-md-6 mb-3">
+          <label for="phone" class="form-label">Phone No</label>
+          <input type="text" id="phone" formControlName="phone" class="form-control" placeholder="Phone Number" />
+        </div>
+      </div>
+
+      <!-- Fourth Row: Department & Role -->
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label for="department" class="form-label">Department</label>
+          <select id="department" formControlName="department" class="form-select">
+            <option value="" disabled>Select Department</option>
+            <option *ngFor="let dept of departments" [value]="dept">{{ dept }}</option>
+          </select>
+          <div *ngIf="userForm.get('department')?.invalid && userForm.get('department')?.touched" class="text-danger">
+            Department is required
+          </div>
+        </div>
+        <div class="col-md-6 mb-3">
+          <label for="role" class="form-label">Role</label>
+          <select id="role" formControlName="role" class="form-select">
+            <option value="" disabled>Select Role</option>
+            <option *ngFor="let role of roles" [value]="role">{{ role }}</option>
+          </select>
+          <div *ngIf="userForm.get('role')?.invalid && userForm.get('role')?.touched" class="text-danger">
+            Role is required
+          </div>
+        </div>
+      </div>
+
+      <!-- Image Upload -->
+      <div class="mb-3">
+        <label for="image" class="form-label">Image</label>
+        <input type="file" id="image" (change)="onImageUpload($event)" accept="image/*" class="form-control" />
+      </div>
+    </form>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-success" (click)="save()" [disabled]="loading">
+      {{ loading ? 'Processing...' : (userId ? 'Update' : 'Save') }}
+    </button>
+    <button type="button" class="btn btn-light" (click)="closeModal()">Cancel</button>
+  </div>
+</div>

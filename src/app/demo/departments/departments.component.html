@@ -1,0 +1,71 @@
+<div class="row">
+    <div class="col-xl-12">
+      <app-card cardTitle="Department List" [options]="false" blockClass="table-border-style">
+        <div class="position-relative">
+          <button class="btn btn-primary" (click)="addDepartment()" style="position: absolute; top: -4rem; right: 0; cursor: pointer; z-index: 10;">
+            <i class="fas fa-plus"></i> Add Department
+          </button>
+        </div>
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Department Name</th>
+                <th>Description</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">1</th>
+                <td>HR</td>
+                <td>Deals with Human Resource activities</td>
+                <td>
+                  <div class="d-flex">
+                    <button class="btn btn-light me-2" (click)="editDepartment(1)">
+                      <i class="fas fa-pencil-alt text-primary"></i>
+                    </button>
+                    <button class="btn btn-light" (click)="deleteDepartment(1)">
+                      <i class="fas fa-trash-alt text-danger"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <th scope="row">2</th>
+                <td>IT</td>
+                <td>Deals with IT related tasks</td>
+                <td>
+                  <div class="d-flex">
+                    <button class="btn btn-light me-2">
+                      <i class="fas fa-pencil-alt text-primary"></i>
+                    </button>
+                    <button class="btn btn-light">
+                      <i class="fas fa-trash-alt text-danger"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <th scope="row">3</th>
+                <td>Retail</td>
+                <td>Deals with Retail Activities</td>
+                <td>
+                  <div class="d-flex">
+                    <button class="btn btn-light me-2">
+                      <i class="fas fa-pencil-alt text-primary"></i>
+                    </button>
+                    <button class="btn btn-light">
+                      <i class="fas fa-trash-alt text-danger"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </app-card>
+    </div>
+  </div>
+  
