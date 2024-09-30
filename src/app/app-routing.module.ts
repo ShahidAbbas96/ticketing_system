@@ -29,25 +29,10 @@ const routes: Routes = [
         loadComponent: () => import('./demo/users/users.component').then((m)=>m.UsersComponent)
       },
       {
-        path: 'component',
-        loadChildren: () => import('./demo/ui-element/ui-basic.module').then((m) => m.UiBasicModule)
-      },
-      {
-        path: 'chart',
-        loadComponent: () => import('./demo/chart & map/core-apex.component')
-      },
-      {
-        path: 'forms',
-        loadComponent: () => import('./demo/forms & tables/form-elements/form-elements.component')
-      },
-      {
-        path: 'tables',
-        loadComponent: () => import('./demo/forms & tables/tbl-bootstrap/tbl-bootstrap.component')
-      },
-      {
-        path: 'sample-page',
-        loadComponent: () => import('./demo/sample-page/sample-page.component')
+        path: 'tickets',
+        loadComponent: () => import('./demo/tickets/tickets.component').then((m)=>m.TicketsComponent)
       }
+    
     ]
   },
   {

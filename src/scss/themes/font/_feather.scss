@@ -851,7 +851,11 @@
 .icon-users:before {
   content: '\e8ea';
 }
-
+.icon-ticket:before {
+  font-family: 'Font Awesome 6 Free'; // Specify the correct Font Awesome font family
+  content: '\f145'; // Unicode for the ticket icon in Font Awesome
+  font-weight: 900; // Ensure the icon appears bold, required for some icons
+}
 .icon-video-off:before {
   content: '\e8eb';
 }
