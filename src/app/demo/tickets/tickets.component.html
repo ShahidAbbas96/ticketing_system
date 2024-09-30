@@ -1,0 +1,48 @@
+<div class="ticket-dashboard">
+  <div class="card">
+    <h3> <span class="badge m-r-5 badge-pill bg-primary">Open</span></h3>
+    <div class="ticket-list">
+      <div class="ticket-item" *ngFor="let ticket of openTickets">
+        <h4>{{ ticket.title }}</h4>
+        <p>{{ shortenDescription(ticket.description) }}</p>
+      </div>
+      <button class="btn btn-primary" (click)="addTicket()" style="width: 60%; margin-left: 20%;">
+        <i class="fas fa-plus"></i> Add Ticket
+      </button>
+    </div>
+  </div>
+
+ 
+
+  <div class="card">
+    <h3> <span class="badge m-r-5 badge-pill bg-warning">In Progress</span></h3>
+    <div class="ticket-list">
+      <div class="ticket-item" *ngFor="let ticket of inProgressTickets">
+        <h4>{{ ticket.title }}</h4>
+        <p>{{ shortenDescription(ticket.description) }}</p>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="card">
+    <h3> <span class="badge m-r-5 badge-pill bg-success">Closed</span></h3>
+    <div class="ticket-list">
+      <div class="ticket-item" *ngFor="let ticket of closedTickets">
+        <h4>{{ ticket.title }}</h4>
+        <p>{{ shortenDescription(ticket.description) }}</p>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="card">
+    <h3> <span class="badge m-r-5 badge-pill bg-danger">OverDue</span></h3>
+    <div class="ticket-list">
+      <div class="ticket-item" *ngFor="let ticket of overdueTickets">
+        <h4>{{ ticket.title }}</h4>
+        <p>{{ shortenDescription(ticket.description) }}</p>
+      </div>
+    </div>
+  </div>
+</div>

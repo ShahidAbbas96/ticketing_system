@@ -45,6 +45,13 @@ export const NavigationItems: NavigationItem[] = [
         type: 'item',
         url: '/users',
         icon: 'icon-users'
+      },
+      {
+        id: 'ticket',
+        title: 'Tickets',
+        type: 'item',
+        url: '/tickets',
+        icon: 'icon-ticket'
       }
     ]
   },

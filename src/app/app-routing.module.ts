@@ -29,6 +29,10 @@ const routes: Routes = [
         loadComponent: () => import('./demo/users/users.component').then((m)=>m.UsersComponent)
       },
       {
+        path: 'tickets',
+        loadComponent: () => import('./demo/tickets/tickets.component').then((m)=>m.TicketsComponent)
+      },
+      {
         path: 'component',
         loadChildren: () => import('./demo/ui-element/ui-basic.module').then((m) => m.UiBasicModule)
       },
