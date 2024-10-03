@@ -7,7 +7,7 @@
   <div class="modal-body">
     <!-- Image Preview -->
     <div class="text-center mb-3">
-      <img [src]="imagePreview || 'https://via.placeholder.com/150'" class="img-thumbnail" width="150" height="150" />
+      <img [src]="imagePreview || 'https://via.placeholder.com/150'" class="img-thumbnail" width="150" height="150" alt="User image preview" />
     </div>
 
     <form [formGroup]="userForm" novalidate>
@@ -66,31 +66,43 @@
         </div>
         <div class="col-md-6 mb-3">
           <label for="phone" class="form-label">Phone No</label>
-          <input type="text" id="phone" formControlName="phone" class="form-control" placeholder="Phone Number" />
+          <input type="text" id="phone" formControlName="phoneNumber" class="form-control" placeholder="Phone Number" />
         </div>
       </div>
 
       <!-- Fourth Row: Department & Role -->
       <div class="row">
         <div class="col-md-6 mb-3">
-          <label for="department" class="form-label">Department</label>
-          <select id="department" formControlName="department" class="form-select">
+          <label for="departmentId" class="form-label">Department</label>
+          <select id="departmentId" formControlName="departmentId" class="form-select">
             <option value="" disabled>Select Department</option>
-            <option *ngFor="let dept of departments" [value]="dept">{{ dept }}</option>
+            <option *ngFor="let dept of departments" [value]="dept.id">{{ dept.name }}</option>
           </select>
-          <div *ngIf="userForm.get('department')?.invalid && userForm.get('department')?.touched" class="text-danger">
+          <div *ngIf="userForm.get('departmentId')?.invalid && userForm.get('departmentId')?.touched" class="text-danger">
             Department is required
           </div>
         </div>
         <div class="col-md-6 mb-3">
-          <label for="role" class="form-label">Role</label>
-          <select id="role" formControlName="role" class="form-select">
+          <label for="roleId" class="form-label">Role</label>
+          <select id="roleId" formControlName="roleId" class="form-select">
             <option value="" disabled>Select Role</option>
-            <option *ngFor="let role of roles" [value]="role">{{ role }}</option>
+            <option *ngFor="let role of roles" [value]="role.id">{{ role.roleName }}</option>
           </select>
-          <div *ngIf="userForm.get('role')?.invalid && userForm.get('role')?.touched" class="text-danger">
+          <div *ngIf="userForm.get('roleId')?.invalid && userForm.get('roleId')?.touched" class="text-danger">
             Role is required
           </div>
+        </div>
+      </div>
+
+      <!-- Add Region dropdown -->
+      <div class="col-md-6 mb-3">
+        <label for="regionId" class="form-label">Region</label>
+        <select id="regionId" formControlName="regionId" class="form-select">
+          <option value="" disabled>Select Region</option>
+          <option *ngFor="let region of regions" [value]="region.id">{{ region.name }}</option>
+        </select>
+        <div *ngIf="userForm.get('regionId')?.invalid && userForm.get('regionId')?.touched" class="text-danger">
+          Region is required
         </div>
       </div>
 

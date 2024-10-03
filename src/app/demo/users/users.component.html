@@ -19,45 +19,39 @@
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <th scope="row">1</th>
-                <td> <img src="assets/images/user/avatar-1.jpg" class="img-radius wid-40" alt="User-Profile-Image" /></td>
-                <td>John Doe</td>
-                <td>John gmail.com</td>
-                <td>Admin</td>
+              <tr *ngFor="let user of users; let i = index">
+                <th scope="row">{{ (pageNo - 1) * pageSize + i + 1 }}</th>
+                <td>
+                  <img [src]="user.imageUrl || 'assets/images/user/avatar-1.jpg'" class="img-radius wid-40" alt="User-Profile-Image" />
+                </td>
+                <td>{{ user.name }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.role }}</td>
                 <td>
                   <div class="d-flex">
-                    <button class="btn btn-light me-2" (click)="editUser(1)">
+                    <button class="btn btn-light me-2" (click)="editUser(user.id)">
                       <i class="fas fa-pencil-alt text-primary"></i>
                     </button>
-                    <button class="btn btn-light" (click)="deleteUser(1)">
+                    <button class="btn btn-light" (click)="deleteUser(user.id)">
                       <i class="fas fa-trash-alt text-danger"></i>
                     </button>
                   </div>
                 </td>
               </tr>
-              <tr>
-                <th scope="row">2</th>
-                <td> <img src="assets/images/user/avatar-1.jpg" class="img-radius wid-40" alt="User-Profile-Image" /></td>
-                <td>Micky Arthur</td>
-                <td>MickyArthur gmail.com</td>
-                <td>HOD</td>
-                <td>
-                  <div class="d-flex">
-                    <button class="btn btn-light me-2">
-                      <i class="fas fa-pencil-alt text-primary"></i>
-                    </button>
-                    <button class="btn btn-light">
-                      <i class="fas fa-trash-alt text-danger"></i>
-                    </button>
-                  </div>
-                </td>
-              </tr>
-          
             </tbody>
           </table>
+        </div>
+        <div class="d-flex justify-content-between align-items-center mt-3">
+          <div>
+            Showing {{ (pageNo - 1) * pageSize + 1 }} to {{ Math.min(pageNo * pageSize, totalCount) }} of {{ totalCount }} entries
+          </div>
+          <ngb-pagination
+            [collectionSize]="totalCount"
+            [(page)]="pageNo"
+            [pageSize]="pageSize"
+            (pageChange)="onPageChange($event)"
+          ></ngb-pagination>
         </div>
       </app-card>
     </div>
   </div>
-  
