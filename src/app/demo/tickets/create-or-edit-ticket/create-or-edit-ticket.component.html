@@ -18,12 +18,12 @@
               </div>
             </div>
             <div class="col-md-6">
-              <label for="department" class="form-label">Department</label>
-              <select id="department" formControlName="department" class="form-select">
+              <label for="departmentId" class="form-label">Department</label>
+              <select id="departmentId" formControlName="departmentId" class="form-select">
                 <option value="" disabled>Select Department</option>
-                <option *ngFor="let dept of departments" [value]="dept">{{ dept }}</option>
+                <option *ngFor="let dept of departments" [value]="dept.id">{{ dept.name }}</option>
               </select>
-              <div *ngIf="ticketForm.get('department')?.invalid && ticketForm.get('department')?.touched" class="text-danger">
+              <div *ngIf="ticketForm.get('departmentId')?.invalid && ticketForm.get('departmentId')?.touched" class="text-danger">
                 Department is required
               </div>
             </div>
@@ -32,24 +32,48 @@
           <!-- Status and Due Date in a Single Row -->
           <div class="row mb-3">
             <div class="col-md-6">
-              <label for="status" class="form-label">Status</label>
-              <select id="status" formControlName="status" class="form-select">
+              <label for="TicketStatus" class="form-label">Status</label>
+              <select id="TicketStatus" formControlName="TicketStatus" class="form-select">
                 <option value="" disabled>Select Status</option>
-                <option value="1">Open</option>
-                <option value="2">In Progress</option>
-                <option value="3">Closed</option>
-                <option value="3">Over Due</option>
-
+                <option *ngFor="let status of statusOptions | keyvalue" [value]="status.key">
+                  {{ status.value }}
+                </option>
               </select>
               <div *ngIf="ticketForm.get('status')?.invalid && ticketForm.get('status')?.touched" class="text-danger">
                 Status is required
               </div>
             </div>
             <div class="col-md-6">
+              <label for="priority" class="form-label">Priority</label>
+              <select id="priority" formControlName="priority" class="form-select">
+                <option value="" disabled>Select Priority</option>
+                <option *ngFor="let priority of priorityOptions | keyvalue" [value]="priority.key">
+                  {{ priority.value }}
+                </option>
+              </select>
+              <div *ngIf="ticketForm.get('priority')?.invalid && ticketForm.get('priority')?.touched" class="text-danger">
+                Priority is required
+              </div>
+            </div>
+          </div>
+
+          <!-- Description in a Single Row -->
+          <div class="row mb-3">
+            <div class="col-md-6">
               <label for="dueDate" class="form-label">Due Date</label>
               <input type="date" id="dueDate" formControlName="dueDate" class="form-control" />
               <div *ngIf="ticketForm.get('dueDate')?.invalid && ticketForm.get('dueDate')?.touched" class="text-danger">
                 Due Date is required
+              </div>
+            </div>
+            <div class="col-md-6">
+              <label for="assigneeId" class="form-label">Assignee</label>
+              <select id="assigneeId" formControlName="assigneeId" class="form-select">
+                <option value="" disabled>Select Assignee</option>
+                <option *ngFor="let user of users" [value]="user.id">{{ user.name }}</option>
+              </select>
+              <div *ngIf="ticketForm.get('assigneeId')?.invalid && ticketForm.get('assigneeId')?.touched" class="text-danger">
+                Assignee is required
               </div>
             </div>
           </div>
@@ -65,82 +89,76 @@
             </div>
           </div>
 
-          <!-- Assign and Attachment in a Single Row -->
+          <!-- Attachment in a Single Row -->
           <div class="row mb-3">
-            <div class="col-md-6">
-              <label for="assignee" class="form-label">Assignee</label>
-              <select id="department" formControlName="assignee" class="form-select">
-                <option value="" disabled>Select Assignee</option>
-                <option *ngFor="let u of users" [value]="u">{{ u }}</option>
-              </select>
-            </div>
-            <div class="col-md-6">
-              <label for="attachment" class="form-label">Attachment</label>
-              <input type="file" id="attachment" (change)="onFileSelected($event)" class="form-control" accept="image/*,video/*" />
+            <div class="col-12">
+              <label for="attachment" class="form-label">Attachments</label>
+              <input type="file" id="attachment" (change)="onFileSelected($event)" class="form-control" accept="image/*,video/*" multiple />
             </div>
           </div>
 
-          <!-- Media Preview -->
-          <div *ngIf="previewUrl" class="row mb-3">
-            <div class="col-12">
-              <label class="form-label">Preview</label>
-              <div *ngIf="isImage(previewUrl)">
-                <img [src]="previewUrl" alt="Image preview" class="img-fluid" />
-              </div>
-              <div *ngIf="isVideo(previewUrl)">
-                <video [src]="previewUrl" controls class="img-fluid"></video>
-              </div>
-            </div>
-          </div>
-          <!-- Comment List -->
-          <div *ngFor="let comment of comments" class="mb-3">
-            <div class="media">
-              <div class="col-md-1"> 
-                <img class="img-radius" width="50" height="50" [src]="comment.userImageUrl" alt="User Image" />
-              </div>
-              <div class="col-md-11">
-                <p class="ml-10">
-                  <strong>{{ comment.adeddBy }}</strong>
-                  <span class="n-time text-muted">
-                    {{ comment.adeddOn | date: 'yyyy-MM-dd hh:mm a' }}
-                  </span>
-                </p>
-                
-                <ng-container *ngIf="editCommentId === comment.id; else displayComment">
-                  <textarea [(ngModel)]="editedCommentText" class="form-control" [value]="editedCommentText"></textarea>
-                  <button class="btn btn-success mt-2" (click)="saveEditedComment()">Save</button>
-                  <button class="btn btn-light mt-2" (click)="cancelEdit()">Cancel</button>
-                </ng-container>
-                
-                <ng-template #displayComment>
-                  <p>{{ comment.text }}</p>
-                  <button class="btn btn-link" (click)="startEditComment(comment.id, comment.text)"><i class="fas fa-pencil-alt text-primary"></i></button>
-                  <button class="btn btn-link text-danger" (click)="deleteComment(comment.id)">  <i class="fas fa-trash-alt text-danger"></i></button>
-                </ng-template>
+          <!-- Media Preview Slider -->
+          <div *ngIf="isValidPreviewUrl()" class="row mb-3">
+            <div *ngFor="let media of previewUrl; let i = index" class="position-relative mb-3">
+              <button type="button" class="btn btn-close btn-danger position-absolute top-0 end-0 m-2" 
+                      (click)="removeFile(i)">
+              </button>
+              <div class="media-wrapper">
+                <img *ngIf="media.type === 'image'" [src]="media.url" alt="Preview {{i + 1}}" class="d-block w-100">
+                <video *ngIf="media.type === 'video'" [src]="media.url" controls class="d-block w-100"></video>
               </div>
             </div>
           </div>
-          
-          
-          <!-- Add Comment Section -->
-          <div class="row mb-3">
-            <div class="col-12">
-              <textarea id="comment" formControlName="commentText" class="form-control" placeholder="Enter your comment" rows="2"></textarea>
+          <!-- Comment section - only show for editing -->
+          <ng-container *ngIf="ticketId">
+            <!-- Comment List -->
+            <div *ngFor="let comment of comments" class="mb-3">
+              <div class="media">
+                <div class="col-md-1"> 
+                  <img class="img-radius" width="50" height="50" [src]="comment.user.imageUrl" alt="User Image" />
+                </div>
+                <div class="col-md-11">
+                  <p class="ml-10">
+                    <strong>{{ comment.user.fullName }}</strong>
+                    <span class="n-time text-muted">
+                      {{ comment.createdDateTime | date: 'yyyy-MM-dd hh:mm a' }}
+                    </span>
+                  </p>
+                  
+                  <ng-container *ngIf="!comment.isEditing; else editMode">
+                    <p>{{ comment.text }}</p>
+                   <!---- <button class="btn btn-link" (click)="editComment(comment)"><i class="fas fa-pencil-alt text-primary"></i></button>-->
+                    <button class="btn btn-link text-danger" (click)="deleteComment(comment.id)"><i class="fas fa-trash-alt text-danger"></i></button>
+                  </ng-container>
+                  
+                  <ng-template #editMode>
+                    <textarea [(ngModel)]="comment.text" class="form-control mb-2" [value]="comment.text"> </textarea>
+                    <button class="btn btn-primary mr-2" (click)="saveComment(comment)">Save</button>
+                    <button class="btn btn-secondary" (click)="cancelEdit(comment)">Cancel</button>
+                  </ng-template>
+                </div>
+              </div>
             </div>
-            <div class="col-md-2 pt-2 text-end">
-              <button type="button" class="btn btn-primary" (click)="addComment()">Comment</button>
+            
+            <!-- Add Comment Section -->
+            <div class="row mb-3">
+              <div class="col-12">
+                <textarea id="comment" formControlName="commentText" class="form-control" placeholder="Enter your comment" rows="2"></textarea>
+              </div>
+              <div class="col-md-2 pt-2 text-end">
+                <button type="button" class="btn btn-primary" (click)="addComment()">Comment</button>
+              </div>
             </div>
-          </div>
+          </ng-container>
           
           
         </form>
       </div>
       <div class="modal-footer">
-        <button type="submit" class="btn btn-success" [disabled]="ticketForm.invalid">
+        <button type="button" class="btn btn-success" [disabled]="ticketForm.invalid" (click)="save()">
           {{loading ? 'Processing...' : (ticketId ? 'Update' : 'Save')}}
         </button>
         <button type="button" class="btn btn-light" (click)="closeModal()">Cancel</button>
       </div>
     </div>
   </div>
-

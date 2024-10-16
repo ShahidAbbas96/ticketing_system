@@ -6,23 +6,34 @@
           <div class="card-body">
             <img src="assets/images/heelshoes.avif" alt="logo" class="img-fluid mb-4" />
             <h4 class="mb-3 f-w-400">SignIn</h4>
-            <div class="input-group mb-3">
-              <span class="input-group-text" id="basic-addon1"><i class="feather icon-mail"></i></span>
-              <input type="email" class="form-control" placeholder="Email address" aria-label="Username" aria-describedby="basic-addon1" />
-            </div>
-            <div class="input-group mb-4">
-              <span class="input-group-text" id="basic-addon3"><i class="feather icon-lock"></i></span>
-              <input type="password" class="form-control" placeholder="Password" aria-label="Username" aria-describedby="basic-addon3" />
-            </div>
-            <div class="form-group text-start mt-2">
-              <div class="checkbox checkbox-primary d-inline">
-                <input type="checkbox" name="checkbox-fill-1" id="checkbox-fill-a1" checked="" />
-                <label for="checkbox-fill-a1" class="cr">Save credentials</label>
+            <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+              <div class="input-group mb-3">
+                <span class="input-group-text" id="basic-addon1"><i class="feather icon-mail"></i></span>
+                <input type="email" class="form-control" placeholder="Email address" formControlName="email" aria-label="Email" aria-describedby="basic-addon1" />
               </div>
-            </div>
-            <div class="d-grid">
-              <button class="btn btn-block btn-primary mb-4">SignIn</button>
-            </div>
+              <div *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched" class="text-danger">
+                Please enter a valid email address
+              </div>
+              <div class="input-group mb-4">
+                <span class="input-group-text" id="basic-addon3"><i class="feather icon-lock"></i></span>
+                <input type="password" class="form-control" placeholder="Password" formControlName="password" aria-label="Password" aria-describedby="basic-addon3" />
+              </div>
+              <div *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched" class="text-danger">
+                Password is required
+              </div>
+              <div class="form-group text-start mt-2">
+                <div class="checkbox checkbox-primary d-inline">
+                  <input type="checkbox" formControlName="rememberMe" id="checkbox-fill-a1" />
+                  <label for="checkbox-fill-a1" class="cr">Save credentials</label>
+                </div>
+              </div>
+              <div *ngIf="errorMessage" class="alert alert-danger">
+                {{ errorMessage }}
+              </div>
+              <div class="d-grid">
+                <button type="submit" class="btn btn-block btn-primary mb-4" [disabled]="loginForm.invalid">SignIn</button>
+              </div>
+            </form>
             <p class="mb-2 text-muted">
               Forgot password?
               <a href="javascriprt:" class="f-w-400">Reset</a>

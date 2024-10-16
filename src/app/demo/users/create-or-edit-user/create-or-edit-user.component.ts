@@ -27,7 +27,7 @@ export class CreateOrEditUserComponent implements OnInit {
   departments: any[] = [];
   roles: any[] = [];
   regions: any[] = [];
-
+  imageType!:'';
   constructor(
     private activeModal: NgbActiveModal,
     private fb: FormBuilder,
@@ -194,16 +194,14 @@ export class CreateOrEditUserComponent implements OnInit {
     if (fileInput.files && fileInput.files.length > 0) {
       const file = fileInput.files[0];
       this.userForm.patchValue({ image: file });
+      const reader = new FileReader();
+      reader.onload = (event) => {
+          this.imagePreview = event.target?.result as string; // Convert File to string
+      };
+      reader.readAsDataURL(file); // Read the file as a data URL
       this.userForm.get('image')?.markAsTouched();
-      this.readFile(file);
     }
   }
 
-  private readFile(file: File): void {
-    const reader = new FileReader();
-    reader.onload = (e: ProgressEvent<FileReader>) => {
-      this.userForm.patchValue({ image: e.target?.result });
-    };
-    reader.readAsDataURL(file);
-  }
+ 
 }

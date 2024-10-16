@@ -1,9 +1,11 @@
 // Angular Import
 import { Component } from '@angular/core';
 import { animate, style, transition, trigger } from '@angular/animations';
+import { Router } from '@angular/router';
 
 // bootstrap
 import { NgbDropdownConfig } from '@ng-bootstrap/ng-bootstrap';
+import { AuthService } from 'src/app/Services/auth.service';
 
 @Component({
   selector: 'app-nav-right',
@@ -26,16 +28,24 @@ export class NavRightComponent {
   visibleUserList: boolean;
   chatMessage: boolean;
   friendId!: number;
-
+  userName: string | null;
+  userImage: string | null;
   // constructor
-  constructor() {
+  constructor(private authService: AuthService, private router: Router) {
     this.visibleUserList = false;
     this.chatMessage = false;
+   var user= this.authService.getDecodedToken();
+   this.userName=user?.name || '';
+   this.userImage=user?.imageUrl || '';
   }
 
   // public method
   onChatToggle(friendID: number) {
     this.friendId = friendID;
     this.chatMessage = !this.chatMessage;
+  }
+  logout() {
+    this.authService.logout();
+    this.router.navigate(['/auth/signin']);
   }
 }

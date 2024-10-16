@@ -34,27 +34,7 @@ export class UserService {
     const formData = new FormData();
     Object.keys(user).forEach((key) => {
       if (key === 'image' && user.image) {
-        const processImage = (imageData: string) => {
-          const byteString = atob(imageData.split(',')[1]);
-          const ab = new ArrayBuffer(byteString.length);
-          const ia = new Uint8Array(ab);
-          const blob = new Blob([ab], { type: 'image/jpeg' }); // Adjust type if needed
-          const file = new File([blob], "image.jpg", { type: 'image/jpeg' }); // Adjust type if needed
-          formData.append('Image', file);
-        };
-
-        if (typeof user.image === 'string') {
-          processImage(user.image);
-        } else if (user.image instanceof File) {
-          const reader = new FileReader();
-          reader.onload = (e) => {
-            const base64String = e.target?.result as string;
-            processImage(base64String);
-          };
-          reader.readAsDataURL(user.image);
-        } else {
-          console.error('Unsupported image format');
-        }
+          formData.append('Image', user.image);
       } else if (user[key as keyof AddUser] !== null && user[key as keyof AddUser] !== undefined) {
         formData.append(key, String(user[key as keyof AddUser]));
       }
@@ -67,27 +47,7 @@ export class UserService {
     const formData = new FormData();
     Object.keys(user).forEach((key) => {
       if (key === 'image' && user.image) {
-        const processImage = (imageData: string) => {
-          const byteString = atob(imageData.split(',')[1]);
-          const ab = new ArrayBuffer(byteString.length);
-          const ia = new Uint8Array(ab);
-          const blob = new Blob([ab], { type: 'image/jpeg' }); // Adjust type if needed
-          const file = new File([blob], "image.jpg", { type: 'image/jpeg' }); // Adjust type if needed
-          formData.append('Image', file);
-        };
-
-        if (typeof user.image === 'string') {
-          processImage(user.image);
-        } else if (user.image instanceof File) {
-          const reader = new FileReader();
-          reader.onload = (e) => {
-            const base64String = e.target?.result as string;
-            processImage(base64String);
-          };
-          reader.readAsDataURL(user.image);
-        } else {
-          console.error('Unsupported image format');
-        }
+        formData.append('Image', user.image);
       } else if (user[key as keyof AddUser] !== null && user[key as keyof AddUser] !== undefined) {
         formData.append(key, String(user[key as keyof AddUser]));
       }
