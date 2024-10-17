@@ -13,6 +13,9 @@ import { UserService } from 'src/app/Services/user.services';
 import { NgbCarouselModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgbCarouselConfig } from '@ng-bootstrap/ng-bootstrap';
 import { NgbCarousel } from '@ng-bootstrap/ng-bootstrap';
+import { AuthService } from 'src/app/Services/auth.service';
+import { parse } from 'path';
+import { forEach } from 'lodash';
 
 interface MediaPreview {
   type: 'image' | 'video';
@@ -39,6 +42,8 @@ export class CreateOrEditTicketComponent implements OnInit, AfterViewInit {
   priorityOptions: { [key: number]: string } = {};
   statusOptions: { [key: number]: string } = {};
   uplloadedFiles:File[]=[]
+  userId: string | null = null;
+  roleId: string | null = null;
   constructor(
     private modalService: NgbActiveModal,
     private fb: FormBuilder,
@@ -46,13 +51,18 @@ export class CreateOrEditTicketComponent implements OnInit, AfterViewInit {
     private commentService: CommentService,
     private userService: UserService,
     private departmentService: DepartmentService,
-    private config: NgbCarouselConfig
+    private config: NgbCarouselConfig,
+    
+    authService:AuthService
   ) {
+    this.userId = authService.getDecodedToken()?.userId||'';
+    this.roleId = authService.getDecodedToken()?.role||'';
     this.initEnumMappings();
     this.config.interval = 0; // set to 0 to disable auto-sliding
     this.config.wrap = false;
     this.config.keyboard = false;
     this.config.pauseOnHover = false;
+
   }
 
   ngOnInit(): void {
@@ -134,20 +144,38 @@ export class CreateOrEditTicketComponent implements OnInit, AfterViewInit {
             this.ticketForm.patchValue(ticket);
             this.ticketForm.get('assigneeId')?.enable();
             this.ticketForm.get('status')?.enable();
-            this.previewUrl = (Array.isArray(ticket.attachmentUrl) ? ticket.attachmentUrl : [ticket.attachmentUrl])
-              .filter((file: any) => file && typeof file === 'object') // Filter out null, undefined, or non-object values
-              .map((file: any) => ({
-                file,
-                type: file.type && typeof file.type === 'string' && file.type.includes('image') ? 'image' : 'video',
-                url: URL.createObjectURL(file as Blob)
-              })) || [];
+            debugger;
+             for(var i=0;i<ticket.attachmentUrl.length;i++)
+             {
+            this.previewUrl.push({ url: ticket.attachmentUrl[i], type: this.getFileType(ticket.attachmentUrl[i])=='image'?'image':'video' }); // Updated to match MediaPreview type
+             console.log(this.getFileType(ticket.attachmentUrl[i]))
+             }
           }
+          console.log(this.previewUrl);
         },
         error: (error) => console.error('Error loading ticket:', error)
       });
     }
   }
-
+   getFileType(url:any) {
+    debugger;
+    const urlObj = new URL(url);
+    const fileName = urlObj.pathname.split('/').pop(); // Get the last part of the path
+    if (!fileName) return ''; // Handle the case where fileName is undefined
+    const fileExtension = fileName.split('.').pop(); // Get the file extension
+    var fileType='video';
+    if (fileExtension?.toLowerCase() === 'png' || 
+    fileExtension?.toLowerCase() === 'jpg' || 
+    fileExtension?.toLowerCase() === 'jpeg' || 
+    fileExtension?.toLowerCase() === 'gif' || 
+    fileExtension?.toLowerCase() === 'bmp' || 
+    fileExtension?.toLowerCase() === 'tiff' || 
+    fileExtension?.toLowerCase() === 'jfif' || 
+    fileExtension?.toLowerCase() === 'webp') {
+    fileType = 'image'; // Handle all common image types
+}
+   return fileType;
+}
   loadComments(): void {
     if (this.ticketId) {
       this.commentService.getCommentsByTicketId(this.ticketId).subscribe({
@@ -209,7 +237,7 @@ export class CreateOrEditTicketComponent implements OnInit, AfterViewInit {
       ticketData.Attachments = this.uplloadedFiles;
       if (this.ticketId) {
         ticketData.Id = this.ticketId;
-        ticketData.CreatedBy = 3;
+        ticketData.CreatedBy = Number(this.userId);
         this.updateTicket(ticketData);
       } else {
         this.createTicket(ticketData);
@@ -236,6 +264,7 @@ export class CreateOrEditTicketComponent implements OnInit, AfterViewInit {
   }
 
   updateTicket(ticketData: CreateOrUpdateTicketDto): void {
+    ticketData.UpdatedBy=Number(this.userId);
     this.ticketService.updateTicket(ticketData).subscribe({
       next: (response) => {
         if (response.status) {
@@ -261,12 +290,12 @@ export class CreateOrEditTicketComponent implements OnInit, AfterViewInit {
       const newComment: AddComment = {
         text: commentText,
         ticketId: this.ticketId,
-        createdBy: 1 // Replace with actual user ID
+        createdBy: Number(this.userId) // Replace with actual user ID
       };
       this.commentService.addComment(newComment).subscribe({
         next: (response) => {
           if (response.status) {
-            this.comments.push(response.data);
+            this.loadComments();
             this.ticketForm.get('commentText')?.reset();
           } else {
             Swal.fire('Error', response.message, 'error');
@@ -289,7 +318,7 @@ export class CreateOrEditTicketComponent implements OnInit, AfterViewInit {
         text: comment.text,
         id: comment.id,
         ticketId: this.ticketId!,
-        createdBy: 1 // Replace with actual user ID
+        createdBy: Number(this.userId) // Replace with actual user ID
       };
       this.commentService.updateComment(newComment).subscribe({
         next: (response) => {
