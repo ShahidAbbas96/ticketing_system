@@ -44,6 +44,8 @@ export class CreateOrEditTicketComponent implements OnInit, AfterViewInit {
   uplloadedFiles:File[]=[]
   userId: string | null = null;
   roleId: string | null = null;
+  departmentId: string | null = null;
+
   constructor(
     private modalService: NgbActiveModal,
     private fb: FormBuilder,
@@ -57,6 +59,7 @@ export class CreateOrEditTicketComponent implements OnInit, AfterViewInit {
   ) {
     this.userId = authService.getDecodedToken()?.userId||'';
     this.roleId = authService.getDecodedToken()?.role||'';
+    this.departmentId = authService.getDecodedToken()?.departmentId||'';
     this.initEnumMappings();
     this.config.interval = 0; // set to 0 to disable auto-sliding
     this.config.wrap = false;
@@ -78,8 +81,14 @@ export class CreateOrEditTicketComponent implements OnInit, AfterViewInit {
 
   initEnumMappings(): void {
     // Create mappings for TicketStatusEnum
-    for (const [key, value] of Object.entries(TicketStatusEnum)) {
+    const entries = Object.entries(TicketStatusEnum);
+    for (let i = 0; i < entries.length; i++) {
+      const [key, value] = entries[i];
       if (!isNaN(Number(value))) {
+        // Check if it's the last status and roleId is not 5
+        if (this.roleId !== '5' && key === 'Closed') {
+          continue; // Skip 'Closed' status if roleId is not 5
+        }
         this.statusOptions[Number(value)] = key;
       }
     }
@@ -98,7 +107,7 @@ export class CreateOrEditTicketComponent implements OnInit, AfterViewInit {
       departmentId: ['', [Validators.required]],
       assigneeId: [{ value: '', disabled: !this.ticketId }],
       description: ['', [Validators.required]],
-      TicketStatus: [{ value: TicketStatusEnum.Open, disabled: !this.ticketId }, [Validators.required]],
+      TicketStatus: [{value:TicketStatusEnum.Open, disabled: !this.ticketId }, [Validators.required]],
       dueDate: ['', [Validators.required]],
       priority: ['', [Validators.required]],
       attachment: [null],
@@ -118,15 +127,17 @@ export class CreateOrEditTicketComponent implements OnInit, AfterViewInit {
   }
 
   loadUsers(): void {
-    this.userService.getAllUsers(1, 1000).subscribe({
-      next: (response) => {
-        if (response.status) {
-          this.users = response.data.users;
+    if (this.departmentId) {
+      this.userService.getAllUsersByDepartment(this.departmentId).subscribe({
+        next: (response) => {
+          if (response.status) {
+            this.users = response.data.users;
       
-        }
-      },
-      error: (error) => console.error('Error loading users:', error)
-    });
+          }
+        },
+        error: (error) => console.error('Error loading users:', error)
+      });
+    }
   }
 
   loadTicket(): void {
@@ -141,9 +152,12 @@ export class CreateOrEditTicketComponent implements OnInit, AfterViewInit {
               ticket.dueDate = date.toISOString().split('T')[0];
             }
             console.log(ticket);
-            this.ticketForm.patchValue(ticket);
+            this.ticketForm.patchValue({
+              ...ticket,
+              TicketStatus: ticket.ticketStatus  // Assuming ticketStatus is the correct property from the backend
+            });
             this.ticketForm.get('assigneeId')?.enable();
-            this.ticketForm.get('status')?.enable();
+            this.ticketForm.get('TicketStatus')?.enable();
             debugger;
              for(var i=0;i<ticket.attachmentUrl.length;i++)
              {
@@ -235,9 +249,13 @@ export class CreateOrEditTicketComponent implements OnInit, AfterViewInit {
       this.loading = true;
       const ticketData: CreateOrUpdateTicketDto = this.ticketForm.value;
       ticketData.Attachments = this.uplloadedFiles;
+      if (!this.ticketId)
+      {
+      ticketData.CreatedBy = Number(this.userId);
+      }
       if (this.ticketId) {
+        ticketData.UpdatedBy= Number(this.userId);
         ticketData.Id = this.ticketId;
-        ticketData.CreatedBy = Number(this.userId);
         this.updateTicket(ticketData);
       } else {
         this.createTicket(ticketData);
@@ -265,6 +283,11 @@ export class CreateOrEditTicketComponent implements OnInit, AfterViewInit {
 
   updateTicket(ticketData: CreateOrUpdateTicketDto): void {
     ticketData.UpdatedBy=Number(this.userId);
+    if(this.previewUrl.length>0){
+      this.previewUrl.forEach(url => {
+        ticketData.AttachmentUrls+=url.url;
+      });
+    }
     this.ticketService.updateTicket(ticketData).subscribe({
       next: (response) => {
         if (response.status) {
@@ -376,7 +399,6 @@ export class CreateOrEditTicketComponent implements OnInit, AfterViewInit {
   }
 
   onButtonClick(event: MouseEvent, index: number) {
-    console.log('Button clicked:', index);
     event.preventDefault();
     event.stopPropagation();
     this.removeFile(index);

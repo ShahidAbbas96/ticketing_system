@@ -13,6 +13,7 @@ interface DecodedToken {
   imageUrl: string;
   userId: string;
   exp: number;
+  departmentId?: string;
 }
 
 @Injectable({
@@ -58,6 +59,7 @@ export class AuthService {
           role: decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] || '',
           imageUrl: decodedToken['ImageUrl'] || '',
           userId: decodedToken['UserId'] || '',
+          departmentId: (decodedToken as any)['DepartmentId'] || '',
           exp: decodedToken['exp'] || 0
         };
       } catch (error) {

@@ -8,6 +8,7 @@ import { SharedModule } from 'src/app/theme/shared/shared.module';
 import { AuthService } from 'src/app/Services/auth.service';
 import { LoginDto } from 'src/interfaces/auth.interface';
 import Swal from 'sweetalert2';
+import { NavigationService } from 'src/app/Services/navigation.service';
 
 @Component({
   selector: 'app-sign-in',
@@ -23,12 +24,13 @@ export default class SignInComponent {
   constructor(
     private formBuilder: FormBuilder,
     private authService: AuthService,
+    private navigationService:NavigationService,
     private router: Router
   ) {
     this.loginForm = this.formBuilder.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required]],
-      rememberMe: [false]
+      rememberMe: []
     });
   }
 
@@ -42,7 +44,9 @@ export default class SignInComponent {
       this.authService.login(loginData).subscribe(
         response => {
           if (response.status) {
+            this.navigationService.getNavigationItems();
             this.router.navigate(['/analytics']);
+            
           } else {
             Swal.fire({
               icon: 'error',

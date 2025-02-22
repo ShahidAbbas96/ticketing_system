@@ -62,12 +62,12 @@ export class UsersComponent implements OnInit {
   addUser() {
     const modalRef = this.modalService.open(CreateOrEditUserComponent, { size: 'lg' });
     modalRef.result.then(
-      (result) => {
-        if (result === 'added') {
-          this.loadUsers();
-        }
+      () => {
+        this.loadUsers();  // Call reload method when modal is closed
       },
-      () => {}
+      () => {
+        // Handle dismissal if needed
+      }
     );
   }
 
@@ -75,12 +75,12 @@ export class UsersComponent implements OnInit {
     const modalRef = this.modalService.open(CreateOrEditUserComponent, { size: 'lg' });
     modalRef.componentInstance.userId = id;
     modalRef.result.then(
-      (result) => {
-        if (result === 'updated') {
-          this.loadUsers();
-        }
+      () => {
+        this.loadUsers();  // Call reload method when modal is closed
       },
-      () => {}
+      () => {
+        // Handle dismissal if needed
+      }
     );
   }
 

@@ -22,6 +22,7 @@ export interface CreateOrUpdateTicketDto {
   Description: string;
   AssigneeId?: number;
   Attachments?: File[];
+  AttachmentUrls?:string;
   CreatedBy: number;
   UpdatedBy?: number;
 }

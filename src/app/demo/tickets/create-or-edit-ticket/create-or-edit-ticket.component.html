@@ -39,7 +39,7 @@
                   {{ status.value }}
                 </option>
               </select>
-              <div *ngIf="ticketForm.get('status')?.invalid && ticketForm.get('status')?.touched" class="text-danger">
+              <div *ngIf="ticketForm.get('TicketStatus')?.invalid && ticketForm.get('TicketStatus')?.touched" class="text-danger">
                 Status is required
               </div>
             </div>
@@ -69,7 +69,7 @@
             <div class="col-md-6">
               <label for="assigneeId" class="form-label">Assignee</label>
               <select id="assigneeId" formControlName="assigneeId" class="form-select">
-                <option value="" disabled>Select Assignee</option>
+                <option value="">Select Assignee</option>
                 <option *ngFor="let user of users" [value]="user.id">{{ user.name }}</option>
               </select>
               <div *ngIf="ticketForm.get('assigneeId')?.invalid && ticketForm.get('assigneeId')?.touched" class="text-danger">
@@ -128,7 +128,9 @@
                   <ng-container *ngIf="!comment.isEditing; else editMode">
                     <p>{{ comment.text }}</p>
                    <!---- <button class="btn btn-link" (click)="editComment(comment)"><i class="fas fa-pencil-alt text-primary"></i></button>-->
-                    <button class="btn btn-link text-danger" (click)="deleteComment(comment.id)"><i class="fas fa-trash-alt text-danger"></i></button>
+                   @if(comment.user.id==userId) {
+                   <button class="btn btn-link text-danger" (click)="deleteComment(comment.id)"><i class="fas fa-trash-alt text-danger"></i></button>
+                   }
                   </ng-container>
                   
                   <ng-template #editMode>

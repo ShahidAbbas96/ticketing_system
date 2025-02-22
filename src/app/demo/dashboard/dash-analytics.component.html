@@ -39,14 +39,14 @@
         <app-card [hidHeader]="true">
           <div class="row">
             <div class="col-auto">
-              <span>IT Tickets</span>
+              <span>Your Tickets Stat</span>
             </div>
             <div class="col text-end">
-              <h2 class="mb-0">826</h2>
-              <span class="text-c-green">
+              <h2 class="mb-0">{{this.ticketsCountByStatus.open+this.ticketsCountByStatus.closed}}</h2>
+             <!-- <span class="text-c-green">
                 8.2%
                 <i class="feather icon-trending-up ms-1"></i>
-              </span>
+              </span>-->
             </div>
           </div>
           <apx-chart
@@ -66,14 +66,14 @@
             <div class="col">
               <h3 class="m-0">
                 <i class="fas fa-circle f-10 m-r-5 text-success"></i>
-                674
+                 {{this.ticketsCountByStatus.closed}}
               </h3>
               <span class="ms-3">Closed</span>
             </div>
             <div class="col">
               <h3 class="m-0">
                 <i class="fas fa-circle text-primary f-10 m-r-5"></i>
-                182
+                {{this.ticketsCountByStatus.open}}
               </h3>
               <span class="ms-3">Open</span>
             </div>

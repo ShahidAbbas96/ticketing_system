@@ -5,6 +5,8 @@ import { Location, LocationStrategy } from '@angular/common';
 // project import
 import { environment } from 'src/environments/environment';
 import { NavigationItem, NavigationItems } from '../navigation';
+import { NavigationService } from 'src/app/Services/navigation.service';
+import { Console } from 'console';
 
 @Component({
   selector: 'app-nav-content',
@@ -25,10 +27,12 @@ export class NavContentComponent implements OnInit {
   // constructor
   constructor(
     private location: Location,
-    private locationStrategy: LocationStrategy
+    private locationStrategy: LocationStrategy,
+    private navigationService:NavigationService
   ) {
     this.windowWidth = window.innerWidth;
-    this.navigations = NavigationItems;
+    this.navigations = this.navigationService.navigationItems;  
+    console.log(this.navigations);
   }
 
   // life cycle event

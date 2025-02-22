@@ -1,4 +1,4 @@
-@if (item.url && !item.external) {
+@if (item.url && !item.external && !item.hidden) {
   <li [ngClass]="item.classes" [routerLinkActive]="['active']">
     <a class="nav-link" [target]="item.target ? '_blank' : '_self'" [routerLink]="[item.url]" (click)="closeOtherMenu($event)">
       @if (item.icon) {

@@ -52,6 +52,13 @@ export class TicketService {
 
     return this.http.get<ResponseModel>(`${this.apiUrl}/getAll`, { params });
   }
+  getAllCountByStatus(userId: string, roleId: string): Observable<ResponseModel> {
+    let params = new HttpParams()
+      .set('userId', userId)
+      .set('roleId', roleId);
+
+    return this.http.get<ResponseModel>(`${this.apiUrl}/getAllCountByStatus`, { params });
+  }
 
   getTicketById(id: number): Observable<ResponseModel> {
     return this.http.get<ResponseModel>(`${this.apiUrl}`, { params: { id: id.toString() } });
@@ -60,6 +67,7 @@ export class TicketService {
   updateTicket(ticket: CreateOrUpdateTicketDto): Observable<ResponseModel> {
     const formData = new FormData();
     Object.keys(ticket).forEach(key => {
+      debugger;
       if (key === 'Attachments' && ticket.Attachments) {
         for (let i = 0; i < ticket.Attachments.length; i++) {
           formData.append('Attachments', ticket.Attachments[i]);

@@ -76,6 +76,14 @@ export class TicketsComponent implements OnInit {
 
   addTicket() {
     const modalRef = this.modalService.open(CreateOrEditTicketComponent, { size: 'lg' });
+    modalRef.result.then(
+      () => {
+        this.loadTickets();  // Call reload method when modal is closed
+      },
+      () => {
+        // Handle dismissal if needed
+      }
+    );
   }
 
   editTicket(id: number) {
@@ -83,14 +91,13 @@ export class TicketsComponent implements OnInit {
     const modalRef = this.modalService.open(CreateOrEditTicketComponent, { size: 'lg' });
     modalRef.componentInstance.ticketId = id;
     
-    modalRef.result.then((result) => {
-      if (result) {
-        // Ticket was updated
-        this.loadTickets();
-      }
-    }, (reason) => {
-      // Modal was dismissed
-    });
+    modalRef.result.then(
+      () => {
+        this.loadTickets();  // Call reload method when modal is closed
+      },
+      () => {
+        // Handle dismissal if needed
+      })
   }
 
   deleteTicket(id: number) {

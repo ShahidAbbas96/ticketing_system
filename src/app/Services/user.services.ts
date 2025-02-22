@@ -25,6 +25,11 @@ export class UserService {
 
     return this.http.get<ResponseModel>(`${this.apiUrl}/Users`, { params });
   }
+  getAllUsersByDepartment(departmentId:string): Observable<ResponseModel> {
+    let params = new HttpParams()
+      .set('departmentId', departmentId)
+    return this.http.get<ResponseModel>(`${this.apiUrl}/Users/getAllUsersByDepartment`, { params });
+  }
 
   getUserById(id: number): Observable<ResponseModel> {
     return this.http.get<ResponseModel>(`${this.apiUrl}/Users/${id}`);

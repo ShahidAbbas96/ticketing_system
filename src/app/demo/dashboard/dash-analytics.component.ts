@@ -1,10 +1,13 @@
 // angular import
-import { Component, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 
 // project import
 import { SharedModule } from 'src/app/theme/shared/shared.module';
 import { ApexTheme, NgApexchartsModule } from 'ng-apexcharts';
 import { ProductSaleComponent } from './product-sale/product-sale.component';
+import { TicketService } from 'src/app/Services/ticket.service';
+import { AuthService } from 'src/app/Services/auth.service';
+
 
 import {
   ChartComponent,
@@ -22,6 +25,7 @@ import {
   ApexTooltip,
   ApexMarkers
 } from 'ng-apexcharts';
+import { DashboradCart, TicketCountByStatus } from 'src/interfaces/ticketcountbystatus.interface';
 
 export type ChartOptions = {
   series: ApexAxisChartSeries | ApexNonAxisChartSeries;
@@ -48,7 +52,7 @@ export type ChartOptions = {
   templateUrl: './dash-analytics.component.html',
   styleUrls: ['./dash-analytics.component.scss']
 })
-export default class DashAnalyticsComponent {
+export default class DashAnalyticsComponent implements OnInit {
   // public props
   @ViewChild('chart') chart!: ChartComponent;
   @ViewChild('customerChart') customerChart!: ChartComponent;
@@ -56,9 +60,16 @@ export default class DashAnalyticsComponent {
   chartOptions_1!: Partial<ChartOptions>;
   chartOptions_2!: Partial<ChartOptions>;
   chartOptions_3!: Partial<ChartOptions>;
-
+  ticketService:TicketService;
+  userId: string | null = null;
+  roleId: string | null = null;
+  ticketsCountByStatus!:TicketCountByStatus;
+  cards!:DashboradCart[];
   // constructor
-  constructor() {
+  constructor(ticketService: TicketService,authService:AuthService) {
+    this.ticketService=ticketService;
+    this.userId = authService.getDecodedToken()?.userId||'';
+    this.roleId = authService.getDecodedToken()?.role||'';
     this.chartOptions = {
       chart: {
         height: 205,
@@ -244,41 +255,63 @@ export default class DashAnalyticsComponent {
       }
     };
   }
-  cards = [
-    {
-      background: 'bg-c-blue',
-      title: 'Open',
-     
-      text: 'This Month',
-      number: '486',
-      no: '351'
-    },
-    {
-      background: 'bg-c-green',
-      title: 'Closed',
-    
-      text: 'This Month',
-      number: '1641',
-      no: '213'
-    },
-    {
-      background: 'bg-c-yellow',
-      title: 'In Progress',
- 
-      text: 'This Month',
-      number: '300',
-      no: '150'
-    },
-    {
-      background: 'bg-c-red',
-      title: 'OverDue',
-     
-      text: 'This Month',
-      number: '10',
-      no: '2'
-    }
-  ];
-
+  ngOnInit() {
+    this.loadTickets();
+  }
+  loadTickets() {
+    this.ticketService.getAllCountByStatus(this.userId ?? '', this.roleId ?? '').subscribe({
+      next: (response) => {
+        if (response.status) {
+          this.ticketsCountByStatus = response.data.statusCounts;
+          this.SetTicketCards(); 
+        } else {
+          console.error('Failed to load tickets:', response.message);
+        }
+      },
+      error: (error) => {
+        console.error('Error loading tickets:', error);
+      }
+    });
+   
+  
+  }
+  SetTicketCards(){
+    this.cards = [
+      {
+        background: 'bg-c-blue',
+        title: 'Open',
+       
+        text: 'This Month',
+        number: this.ticketsCountByStatus.open,
+        no: this.ticketsCountByStatus.currentMonth.open
+      },
+      {
+        background: 'bg-c-green',
+        title: 'Closed',
+      
+        text: 'This Month',
+        number: this.ticketsCountByStatus.closed,
+        no: this.ticketsCountByStatus.currentMonth.closed
+      },
+      {
+        background: 'bg-c-yellow',
+        title: 'In Progress',
+   
+        text: 'This Month',
+        number: this.ticketsCountByStatus.inProgress,
+        no: this.ticketsCountByStatus.currentMonth.inProgress
+      },
+      {
+        background: 'bg-c-red',
+        title: 'OverDue',
+       
+        text: 'This Month',
+        number: this.ticketsCountByStatus.overdue,
+        no: this.ticketsCountByStatus.currentMonth.overdue
+      }
+    ];
+    this.chartOptions_1.series=[this.ticketsCountByStatus.open,this.ticketsCountByStatus.closed]
+  }
   images = [
     {
       src: 'assets/images/gallery-grid/img-grd-gal-1.jpg',
