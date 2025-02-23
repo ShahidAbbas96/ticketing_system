@@ -20,7 +20,7 @@ import { NavigationService } from 'src/app/Services/navigation.service';
 export default class SignInComponent {
   loginForm: FormGroup;
   errorMessage: string = '';
-
+  loading=false;
   constructor(
     private formBuilder: FormBuilder,
     private authService: AuthService,
@@ -36,6 +36,7 @@ export default class SignInComponent {
 
   onSubmit() {
     if (this.loginForm.valid) {
+    this.loading=true;
       const loginData: LoginDto = {
         email: this.loginForm.get('email')?.value,
         password: this.loginForm.get('password')?.value
@@ -60,6 +61,7 @@ export default class SignInComponent {
           this.errorMessage = 'An error occurred during login';
         }
       );
+      this.loading=false;
     } else {
       this.errorMessage = 'Please fill in all required fields correctly';
     }

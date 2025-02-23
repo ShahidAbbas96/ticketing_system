@@ -4,8 +4,10 @@
       <div class="row align-items-center text-center">
         <div class="col-md-12">
           <div class="card-body">
-            <img src="http://retailapi.heelsshoes.pk:7059/Files/Logo/heelshoes.avif" alt="logo" class="img-fluid mb-4" />
-            <h4 class="mb-3 f-w-400">SignIn</h4>
+            <div class="complain-management">
+              <h2>Heels Complain Management</h2>
+            </div>            
+            <!--<h4 class="mb-3 f-w-400">SignIn</h4>!-->
             <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
               <div class="input-group mb-3">
                 <span class="input-group-text" id="basic-addon1"><i class="feather icon-mail"></i></span>
@@ -21,27 +23,27 @@
               <div *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched" class="text-danger">
                 Password is required
               </div>
-              <div class="form-group text-start mt-2">
+              <!--<div class="form-group text-start mt-2">
                 <div class="checkbox checkbox-primary d-inline">
                   <input type="checkbox" formControlName="rememberMe" id="checkbox-fill-a1" />
                   <label for="checkbox-fill-a1" class="cr">Save credentials</label>
                 </div>
-              </div>
+              </div>!-->
               <div *ngIf="errorMessage" class="alert alert-danger">
                 {{ errorMessage }}
               </div>
               <div class="d-grid">
-                <button type="submit" class="btn btn-block btn-primary mb-4" [disabled]="loginForm.invalid">SignIn</button>
+                <button type="submit" class="btn btn-block btn-primary mb-4" [disabled]="loginForm.invalid">{{loading ? 'Processing...' : 'SignIn'}} </button>
               </div>
             </form>
-            <p class="mb-2 text-muted">
+           <!---- <p class="mb-2 text-muted">
               Forgot password?
               <a href="javascriprt:" class="f-w-400">Reset</a>
             </p>
             <p class="mb-0 text-muted">
               Don’t have an account?
               <a [routerLink]="['/auth/signup']" class="f-w-400">Signup</a>
-            </p>
+            </p>!-->
           </div>
         </div>
       </div>
