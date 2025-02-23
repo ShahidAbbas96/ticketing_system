@@ -113,6 +113,13 @@ export class CreateOrEditTicketComponent implements OnInit, AfterViewInit {
       attachment: [null],
       commentText: [{ value: '', disabled: !this.ticketId }]
     });
+    const dueDateControl = this.ticketForm.get('dueDate');
+    if (dueDateControl && !dueDateControl.value) {
+      const currentDate = new Date();
+      currentDate.setHours(currentDate.getHours() + 24);
+      const formattedDueDate = currentDate.toISOString().split('T')[0];
+      dueDateControl.setValue(formattedDueDate);
+    }
   }
 
   loadDepartments(): void {
@@ -359,7 +366,38 @@ export class CreateOrEditTicketComponent implements OnInit, AfterViewInit {
       });
     }
   }
-
+  onPriorityChange(event: Event): void {
+    const selectedPriority = (event.target as HTMLSelectElement).value;
+    const dueDateControl = this.ticketForm.get('dueDate');
+  
+    if (dueDateControl) {
+      const currentDate = new Date();
+      let dueDate = new Date();
+  
+      switch (selectedPriority) {
+        case PrioritiyStatusEnum.Critical.toString():
+          dueDate.setHours(currentDate.getHours() + 24);
+          break;
+        case PrioritiyStatusEnum.High.toString():
+          dueDate.setHours(currentDate.getHours() + 48);
+          break;
+        case PrioritiyStatusEnum.Medium.toString():
+          dueDate.setHours(currentDate.getHours() + 72);
+          break;
+        case PrioritiyStatusEnum.Low.toString():
+          dueDate.setHours(currentDate.getHours() + 96);
+          break;
+        default:
+          // Handle default case if needed
+          break;
+      }
+  
+      // Format the date to YYYY-MM-DD
+      const formattedDueDate = dueDate.toISOString().split('T')[0];
+      dueDateControl.setValue(formattedDueDate);
+    }
+  }
+  
   cancelEdit(comment: Comment) {
     comment.isEditing = false;
     comment.editText = '';

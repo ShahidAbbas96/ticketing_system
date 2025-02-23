@@ -45,7 +45,7 @@
             </div>
             <div class="col-md-6">
               <label for="priority" class="form-label">Priority</label>
-              <select id="priority" formControlName="priority" class="form-select">
+              <select id="priority" formControlName="priority" (change)="onPriorityChange($event)" class="form-select">
                 <option value="" disabled>Select Priority</option>
                 <option *ngFor="let priority of priorityOptions | keyvalue" [value]="priority.key">
                   {{ priority.value }}
