@@ -6,7 +6,7 @@ import Swal from 'sweetalert2';
 import { TicketService } from 'src/app/Services/ticket.service';
 import { CreateOrUpdateTicketDto, TicketStatusEnum, PrioritiyStatusEnum } from 'src/interfaces/ticket.interface';
 import { AuthService } from 'src/app/Services/auth.service';
-
+import { ExcelExportService } from 'src/app/Services/excel-export.service';
 @Component({
   selector: 'app-tickets',
   standalone: true,
@@ -17,16 +17,18 @@ import { AuthService } from 'src/app/Services/auth.service';
 export class TicketsComponent implements OnInit {
   modalService: NgbModal;
   ticketService: TicketService;
-  
+  excelExportService:ExcelExportService;
   openTickets: any[] = [];
+  allTickets: any[] = [];
   inProgressTickets: any[] = [];
   closedTickets: any[] = [];
   resolvedTickets: any[] = [];
   userId: string | null = null;
   roleId: string | null = null;
-  constructor(modalService: NgbModal, ticketService: TicketService,authService:AuthService) {
+  constructor(modalService: NgbModal, ticketService: TicketService,authService:AuthService,excelExportService:ExcelExportService) {
     this.modalService = modalService;
     this.ticketService = ticketService;
+    this.excelExportService=excelExportService;
     this.userId = authService.getDecodedToken()?.userId||'';
     this.roleId = authService.getDecodedToken()?.role||'';
   }
@@ -42,6 +44,7 @@ export class TicketsComponent implements OnInit {
       next: (response) => {
         if (response.status) {
           const allTickets = response.data.tickets as CreateOrUpdateTicketDto[];
+          this.allTickets=allTickets;
           this.categorizeTickets(allTickets);
         } else {
           console.error('Failed to load tickets:', response.message);
@@ -143,7 +146,20 @@ export class TicketsComponent implements OnInit {
         return 'Undefined';
     }
   }
-
+  getStatusText(priority: TicketStatusEnum): string {
+    switch (priority) {
+      case TicketStatusEnum.Open:
+        return 'Open';
+      case TicketStatusEnum.InProgress:
+        return 'InProgress';
+      case TicketStatusEnum.Resolved:
+        return 'Resolved';
+      case TicketStatusEnum.Closed:
+        return 'Closed';
+      default:
+        return 'Undefined';
+    }
+  }
   getPriorityClass(priority: PrioritiyStatusEnum): string {
     switch (priority) {
       case PrioritiyStatusEnum.Low:
@@ -157,5 +173,19 @@ export class TicketsComponent implements OnInit {
       default:
         return 'bg-secondary';
     }
+  }
+  exportToExcel(): void {
+    // Map and reorder the properties
+    this.allTickets = this.allTickets.map(({ assigneeId, id, ...item }) => ({
+      TicketNumber: id, // First column
+      title: item.title, // Second column
+      priority: this.getPriorityText(item.priority), // Other columns
+      ticketStatus: this.getStatusText(item.ticketStatus),
+      description: item.description,
+      dueDate: item.dueDate,
+    }));
+  
+    // Export to Excel
+    this.excelExportService.exportToExcel(this.allTickets, 'ticketsReport');
   }
 }
