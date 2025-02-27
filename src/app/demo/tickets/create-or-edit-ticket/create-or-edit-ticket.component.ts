@@ -260,7 +260,7 @@ export class CreateOrEditTicketComponent implements OnInit, AfterViewInit {
     if (this.ticketForm.valid) {
       debugger;
       const ticketData: CreateOrUpdateTicketDto = this.ticketForm.value;
-      if(ticketData.ticketStatus==TicketStatusEnum.Closed && ticketData.FinancialCost==null){
+      if(ticketData.ticketStatus==TicketStatusEnum.Closed && ticketData.financialCost==null){
         Swal.fire('Warning', 'Please Enter Financial Cost', 'warning');
         return;
       }

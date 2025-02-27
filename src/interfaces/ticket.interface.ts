@@ -25,5 +25,5 @@ export interface CreateOrUpdateTicketDto {
   AttachmentUrls?:string;
   CreatedBy: number;
   UpdatedBy?: number;
-  FinancialCost?:number;
+  financialCost?:number;
 }
