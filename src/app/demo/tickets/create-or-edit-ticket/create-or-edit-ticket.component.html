@@ -32,8 +32,8 @@
           <!-- Status and Due Date in a Single Row -->
           <div class="row mb-3">
             <div class="col-md-6">
-              <label for="TicketStatus" class="form-label">Status</label>
-              <select id="TicketStatus" formControlName="TicketStatus" class="form-select">
+              <label for="ticketStatus" class="form-label">Status</label>
+              <select id="ticketStatus" formControlName="ticketStatus"  (change)="onStatusChange($event)" class="form-select">
                 <option value="" disabled>Select Status</option>
                 <option *ngFor="let status of statusOptions | keyvalue" [value]="status.key">
                   {{ status.value }}
@@ -82,13 +82,21 @@
           <div class="row mb-3">
             <div class="col-12">
               <label for="description" class="form-label">Description</label>
-              <textarea id="description" formControlName="description" class="form-control" placeholder="Enter description" rows="3"></textarea>
+              <input id="description" formControlName="closingValue" class="form-control" placeholder="Enter description" >
               <div *ngIf="ticketForm.get('description')?.invalid && ticketForm.get('description')?.touched" class="text-danger">
                 Description is required
               </div>
             </div>
           </div>
-
+          <div  class="row mb-3">
+            <div *ngIf="isClose" class="col-12">
+              <label for="financialCost" class="form-label">Financial Cost</label>
+              <input type="number" id="financialCost" formControlName="financialCost" class="form-control" placeholder="Enter Financial Cost" >
+              <div *ngIf="ticketForm.get('financialCost')?.invalid && ticketForm.get('financialCost')?.touched" class="text-danger">
+                Financial Cost is required
+              </div>
+            </div>
+          </div>
           <!-- Attachment in a Single Row -->
           <div class="row mb-3">
             <div class="col-12">

@@ -182,7 +182,12 @@ export class TicketsComponent implements OnInit {
       priority: this.getPriorityText(item.priority), // Other columns
       ticketStatus: this.getStatusText(item.ticketStatus),
       description: item.description,
+      CreatedDate:item.createdDateTime,
       dueDate: item.dueDate,
+      FinancialCost:item.financialCost,
+      ClosedDate:item.closedDate,
+      Region:item.region
+
     }));
   
     // Export to Excel

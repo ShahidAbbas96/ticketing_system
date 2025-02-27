@@ -33,6 +33,7 @@ interface MediaPreview {
 export class CreateOrEditTicketComponent implements OnInit, AfterViewInit {
   @Input() ticketId?: number;
   loading = false;
+  isClose=false;
   ticketForm!: FormGroup;
   departments: any[] = [];
   users: any[] = [];
@@ -107,9 +108,10 @@ export class CreateOrEditTicketComponent implements OnInit, AfterViewInit {
       departmentId: ['', [Validators.required]],
       assigneeId: [{ value: '', disabled: !this.ticketId }],
       description: ['', [Validators.required]],
-      TicketStatus: [{value:TicketStatusEnum.Open, disabled: !this.ticketId }, [Validators.required]],
+      ticketStatus: [{value:TicketStatusEnum.Open, disabled: !this.ticketId }, [Validators.required]],
       dueDate: ['', [Validators.required]],
       priority: ['', [Validators.required]],
+      financialCost: [''],
       attachment: [null],
       commentText: [{ value: '', disabled: !this.ticketId }]
     });
@@ -161,8 +163,11 @@ export class CreateOrEditTicketComponent implements OnInit, AfterViewInit {
             console.log(ticket);
             this.ticketForm.patchValue({
               ...ticket,
-              TicketStatus: ticket.ticketStatus  // Assuming ticketStatus is the correct property from the backend
+              ticketStatus: ticket.ticketStatus  // Assuming ticketStatus is the correct property from the backend
             });
+            if(ticket.ticketStatus==TicketStatusEnum.Closed){
+              this.isClose=true;
+            }
             this.ticketForm.get('assigneeId')?.enable();
             this.ticketForm.get('TicketStatus')?.enable();
             debugger;
@@ -253,8 +258,14 @@ export class CreateOrEditTicketComponent implements OnInit, AfterViewInit {
 
   save(): void {
     if (this.ticketForm.valid) {
-      this.loading = true;
+      debugger;
       const ticketData: CreateOrUpdateTicketDto = this.ticketForm.value;
+      if(ticketData.ticketStatus==TicketStatusEnum.Closed && ticketData.FinancialCost==null){
+        Swal.fire('Warning', 'Please Enter Financial Cost', 'warning');
+        return;
+      }
+      this.loading = true;
+
       ticketData.Attachments = this.uplloadedFiles;
       if (!this.ticketId)
       {
@@ -397,7 +408,15 @@ export class CreateOrEditTicketComponent implements OnInit, AfterViewInit {
       dueDateControl.setValue(formattedDueDate);
     }
   }
-  
+  onStatusChange(event: Event): void {
+    this.isClose=false;
+
+    const selectedStatus = (event.target as HTMLSelectElement).value; 
+    debugger;
+     if(selectedStatus==TicketStatusEnum.Closed.toString()){
+      this.isClose=true;
+     }
+  }
   cancelEdit(comment: Comment) {
     comment.isEditing = false;
     comment.editText = '';
