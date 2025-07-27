@@ -69,7 +69,7 @@ export class TicketsComponent implements OnInit {
   }
 
   shortenDescription(description: string): string {
-    const wordLimit = 20;
+    const wordLimit = 8;
     const words = description.split(' ');
     if (words.length > wordLimit) {
       return words.slice(0, wordLimit).join(' ') + '...';
@@ -178,15 +178,16 @@ export class TicketsComponent implements OnInit {
     // Map and reorder the properties
     this.allTickets = this.allTickets.map(({ assigneeId, id, ...item }) => ({
       TicketNumber: id, // First column
-      title: item.title, // Second column
+      subject: item.title, // Second column
       priority: this.getPriorityText(item.priority), // Other columns
       ticketStatus: this.getStatusText(item.ticketStatus),
-      description: item.description,
+      detials: item.description,
       CreatedDate:item.createdDateTime,
       dueDate: item.dueDate,
       FinancialCost:item.financialCost,
       ClosedDate:item.closedDate,
-      Region:item.region
+      Region:item.region,
+      Store:item.user.firstName+" "+item.user.lastName
 
     }));
   

@@ -1,5 +1,7 @@
-<div>
-  <button class="btn btn-success exportbtn" (click)="exportToExcel()">  <i class="fas fa-file-excel"></i>  Export</button>
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <div>
+    <button class="btn btn-success exportbtn" (click)="exportToExcel()">  <i class="fas fa-file-excel"></i>  Export</button>
+  </div>
 </div>
 <div class="ticket-dashboard">
   <div class="card">
@@ -12,6 +14,7 @@
           {{ getPriorityText(ticket.priority) }}
         </span>
         <p>Due Date: {{ticket.dueDate| date:'dd/MM/yyyy' }}</p>
+        <p>Shop: {{ticket.user.firstName+" "+ticket.user.lastName}}</p>
       </div>
       @if (roleId=="5") {
       <button class="btn btn-primary" (click)="addTicket()" style="width: 60%; margin-left: 20%;">

@@ -1,0 +1,332 @@
+<div class="container-fluid">
+  <!-- Header Section -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <h4 class="mb-0">
+            <i class="fas fa-ticket-alt me-2"></i>
+            Ticket Management
+          </h4>
+          <div class="d-flex gap-2">
+            <button class="btn btn-success" (click)="exportToExcel()" [disabled]="isLoading">
+              <i class="fas fa-file-excel me-1"></i>
+              Export
+            </button>
+            @if (roleId == "2") {
+              <button class="btn btn-primary" (click)="addTicket()" [disabled]="isLoading">
+                <i class="fas fa-plus me-1"></i>
+                Add Ticket
+              </button>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filters Section -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header">
+          <h5 class="mb-0">
+            <i class="fas fa-filter me-2"></i>
+            Filters
+          </h5>
+        </div>
+        <div class="card-body">
+          @if (isFilterDataLoading) {
+            <div class="text-center py-2">
+              <div class="spinner-border spinner-border-sm text-primary me-2" role="status"></div>
+              <span class="text-muted">Loading filters...</span>
+            </div>
+          }
+          <form [formGroup]="filterForm" class="row g-3">
+            <!-- First Row -->
+            <div class="row g-3 mb-3">
+              <!-- Search -->
+              <div [ngClass]="roleId == '5' ? 'col-md-4' : 'col-md-3'">
+                <label for="searchTerm" class="form-label">Search</label>
+                <input 
+                  type="text" 
+                  class="form-control" 
+                  id="searchTerm" 
+                  formControlName="searchTerm"
+                  placeholder="Search tickets..."
+                >
+              </div>
+
+              <!-- Status Filter -->
+              <div [ngClass]="roleId == '5' ? 'col-md-4' : 'col-md-3'">
+                <label for="status" class="form-label">Status</label>
+                <select class="form-select" id="status" formControlName="status">
+                  <option value="">All Status</option>
+                  <option *ngFor="let status of getStatusOptions()" [value]="status">
+                    {{ getStatusText(status) }}
+                  </option>
+                </select>
+              </div>
+
+              <!-- Region Filter -->
+              @if (roleId != "5") {
+                <div class="col-md-3">
+                  <label for="region" class="form-label">Region</label>
+                  <select class="form-select" id="region" formControlName="region">
+                    <option value="">All Regions</option>
+                    <option *ngFor="let region of getUniqueRegions()" [value]="region">
+                      {{ region }}
+                    </option>
+                  </select>
+                </div>
+
+                <!-- User Filter -->
+                <div class="col-md-3">
+                  <label for="user" class="form-label">User</label>
+                  <select class="form-select" id="user" formControlName="user">
+                    <option value="">All Users</option>
+                    <option *ngFor="let user of users" [value]="user.id">
+                      {{ user.firstName }} {{ user.lastName }}
+                    </option>
+                  </select>
+                </div>
+              }
+            </div>
+
+            <!-- Second Row -->
+            <div class="row g-3">
+              <!-- Start Date -->
+              <div [ngClass]="roleId == '5' ? 'col-md-4' : 'col-md-3'">
+                <label for="startDate" class="form-label">From Date</label>
+                <input 
+                  type="date" 
+                  class="form-control" 
+                  id="startDate" 
+                  formControlName="startDate"
+                >
+              </div>
+
+              <!-- End Date -->
+              <div [ngClass]="roleId == '5' ? 'col-md-4' : 'col-md-3'">
+                <label for="endDate" class="form-label">To Date</label>
+                <input 
+                  type="date" 
+                  class="form-control" 
+                  id="endDate" 
+                  formControlName="endDate"
+                >
+              </div>
+
+              <!-- Clear Filters -->
+              <div [ngClass]="roleId == '5' ? 'col-md-4' : 'col-md-3'" class="d-flex align-items-end">
+                <button type="button" class="btn btn-outline-secondary" (click)="clearFilters()">
+                  <i class="fas fa-times me-2"></i>
+                  Clear Filters
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tickets Table -->
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header">
+          <h5 class="mb-0">
+            <i class="fas fa-list me-2"></i>
+            Tickets ({{ totalItems }})
+          </h5>
+        </div>
+        <div class="card-body">
+          @if (isLoading) {
+            <div class="text-center py-4">
+              <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+              <p class="mt-2">Loading tickets...</p>
+            </div>
+          } @else if (filteredTickets.length === 0) {
+            <div class="text-center py-4">
+              <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+              <h5 class="text-muted">No tickets found</h5>
+              <p class="text-muted">Try adjusting your filters or create a new ticket.</p>
+            </div>
+          } @else {
+            <div class="table-responsive">
+              <table class="table table-hover">
+                <thead class="table-light">
+                  <tr>
+                    <th>ID</th>
+                    <th>Title</th>
+                    <th>Status</th>
+                    <th>Assignee</th>
+                    <th>Region</th>
+                    <th>Created Date</th>
+                    <th>Due Date</th>
+                    <th>Financial Cost</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let ticket of filteredTickets | slice: (currentPage - 1) * pageSize : currentPage * pageSize">
+                    <td>
+                      <strong>#{{ ticket.id }}</strong>
+                    </td>
+                    <td>
+                      <div>
+                        <div class="fw-bold">{{ ticket.title }}</div>
+                        <small class="text-muted">{{ ticket.description | slice:0:50 }}{{ ticket.description.length > 50 ? '...' : '' }}</small>
+                      </div>
+                    </td>
+                    <td>
+                      <span >
+                        {{ getStatusText(ticket.ticketStatus) }}
+                      </span>
+                    </td>
+                    <td>
+                      @if (ticket.user) {
+                        {{ ticket.user.firstName }} {{ ticket.user.lastName }}
+                      } @else {
+                        <span class="text-muted">Unassigned</span>
+                      }
+                    </td>
+                    <td>
+                      @if (ticket.region) {
+                        {{ ticket.region }}
+                      } @else {
+                        <span class="text-muted">-</span>
+                      }
+                    </td>
+                    <td>
+                      {{ ticket.createdDateTime | date:'dd/MM/yyyy' }}
+                    </td>
+                    <td>
+                      <span [class.text-danger]="isOverdue(ticket.dueDate)">
+                        {{ ticket.dueDate | date:'dd/MM/yyyy' }}
+                      </span>
+                    </td>
+                    <td>
+                      @if (ticket.financialCost) {
+                        {{ ticket.financialCost | number:'1.2-2' }}
+                      } @else {
+                        <span class="text-muted">-</span>
+                      }
+                    </td>
+                    <td>
+                      <div class="btn-group" role="group">
+                        <button 
+                          type="button" 
+                          class="btn btn-sm btn-outline-primary" 
+                          (click)="editTicket(ticket.id)"
+                          title="Edit Ticket"
+                        >
+                          <i class="fas fa-edit"></i>
+                        </button>
+                        <!-- <button 
+                          type="button" 
+                          class="btn btn-sm btn-outline-warning" 
+                          (click)="openStatusUpdateModal(ticket)"
+                          title="Update Status"
+                        >
+                          <i class="fas fa-sync-alt"></i>
+                        </button> -->
+                        @if (roleId == "2") {
+                          <button 
+                            type="button" 
+                            class="btn btn-sm btn-outline-danger" 
+                            (click)="deleteTicket(ticket.id)"
+                            title="Delete Ticket"
+                          >
+                            <i class="fas fa-trash"></i>
+                          </button>
+                        }
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Pagination -->
+            @if (totalItems > pageSize) {
+              <div class="d-flex justify-content-center mt-4">
+                <ngb-pagination
+                  [collectionSize]="totalItems"
+                  [(page)]="currentPage"
+                  [pageSize]="pageSize"
+                  [boundaryLinks]="true"
+                  [maxSize]="5"
+                  (pageChange)="onPageChange($event)"
+                  class="d-flex justify-content-center"
+                ></ngb-pagination>
+              </div>
+            }
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Status Update Modal -->
+<ng-template #statusUpdateModal let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title">
+      <i class="fas fa-sync-alt me-2"></i>
+      Update Ticket Status
+    </h5>
+    <button type="button" class="btn-close" (click)="modal.dismiss()"></button>
+  </div>
+  <div class="modal-body">
+    @if (selectedTicket) {
+      <div class="mb-3">
+        <strong>Ticket:</strong> #{{ selectedTicket.id }} - {{ selectedTicket.title }}
+      </div>
+      
+      <form [formGroup]="statusUpdateForm">
+        <div class="mb-3">
+          <label for="status" class="form-label">Status</label>
+          <select class="form-select" id="status" formControlName="status">
+            <option *ngFor="let status of getStatusOptions()" [value]="status">
+              {{ getStatusText(status) }}
+            </option>
+          </select>
+        </div>
+        
+        <div class="mb-3">
+          <label for="comment" class="form-label">Comment (Optional)</label>
+          <textarea 
+            class="form-control" 
+            id="comment" 
+            rows="3" 
+            formControlName="comment"
+            placeholder="Add a comment about this status change..."
+          ></textarea>
+        </div>
+      </form>
+    }
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" (click)="modal.dismiss()">
+      Cancel
+    </button>
+    <button 
+      type="button" 
+      class="btn btn-primary" 
+      (click)="updateTicketStatus()"
+      [disabled]="isUpdatingStatus || !statusUpdateForm.valid"
+    >
+      @if (isUpdatingStatus) {
+        <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+        Updating...
+      } @else {
+        <i class="fas fa-save me-2"></i>
+        Update Status
+      }
+    </button>
+  </div>
+</ng-template> 

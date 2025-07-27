@@ -1,0 +1,266 @@
+// Ticket Listing Component Styles
+
+.ticket-listing {
+  .card {
+    border: none;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    border-radius: 0.5rem;
+    
+    .card-header {
+      background-color: #f8f9fa;
+      border-bottom: 1px solid #dee2e6;
+      border-radius: 0.5rem 0.5rem 0 0 !important;
+    }
+  }
+
+  .table {
+    th {
+      border-top: none;
+      font-weight: 600;
+      color: #495057;
+      background-color: #f8f9fa;
+    }
+    
+    td {
+      vertical-align: middle;
+      border-top: 1px solid #dee2e6;
+    }
+    
+    tbody tr {
+      transition: background-color 0.15s ease-in-out;
+      
+      &:hover {
+        background-color: #f8f9fa;
+      }
+    }
+  }
+
+  .badge {
+    font-size: 0.75rem;
+    padding: 0.375rem 0.75rem;
+    border-radius: 0.375rem;
+  }
+
+  .btn-group {
+    .btn {
+      border-radius: 0.375rem;
+      margin-right: 0.25rem;
+      
+      &:last-child {
+        margin-right: 0;
+      }
+    }
+  }
+
+  .form-control, .form-select {
+    border-radius: 0.375rem;
+    border: 1px solid #ced4da;
+    
+    &:focus {
+      border-color: #86b7fe;
+      box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    }
+  }
+
+  .btn {
+    border-radius: 0.375rem;
+    font-weight: 500;
+    
+    &.btn-outline-primary {
+      color: #0d6efd;
+      border-color: #0d6efd;
+      
+      &:hover {
+        background-color: #0d6efd;
+        border-color: #0d6efd;
+      }
+    }
+    
+    &.btn-outline-warning {
+      color: #ffc107;
+      border-color: #ffc107;
+      
+      &:hover {
+        background-color: #ffc107;
+        border-color: #ffc107;
+        color: #000;
+      }
+    }
+    
+    &.btn-outline-danger {
+      color: #dc3545;
+      border-color: #dc3545;
+      
+      &:hover {
+        background-color: #dc3545;
+        border-color: #dc3545;
+      }
+    }
+  }
+
+  // Status badge colors
+  .badge-secondary {
+    background-color: #6c757d !important;
+  }
+  
+  .badge-primary {
+    background-color: #0d6efd !important;
+  }
+  
+  .badge-warning {
+    background-color: #ffc107 !important;
+    color: #000 !important;
+  }
+  
+  .badge-success {
+    background-color: #198754 !important;
+  }
+  
+  .badge-danger {
+    background-color: #dc3545 !important;
+  }
+
+  // Priority badge colors
+  .badge-secondary {
+    background-color: #6c757d !important;
+  }
+  
+  .badge-primary {
+    background-color: #0d6efd !important;
+  }
+  
+  .badge-warning {
+    background-color: #ffc107 !important;
+    color: #000 !important;
+  }
+  
+  .badge-danger {
+    background-color: #dc3545 !important;
+  }
+
+  // Pagination styles
+  ::ng-deep .pagination {
+    .page-link {
+      border-radius: 0.375rem;
+      margin: 0 0.125rem;
+      border: 1px solid #dee2e6;
+      color: #0d6efd;
+      
+      &:hover {
+        background-color: #e9ecef;
+        border-color: #dee2e6;
+        color: #0a58ca;
+      }
+      
+      &:focus {
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+      }
+    }
+    
+    .page-item.active .page-link {
+      background-color: #0d6efd;
+      border-color: #0d6efd;
+    }
+  }
+
+  // Modal styles
+  .modal-content {
+    border-radius: 0.5rem;
+    border: none;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+  }
+
+  .modal-header {
+    border-bottom: 1px solid #dee2e6;
+    border-radius: 0.5rem 0.5rem 0 0;
+  }
+
+  .modal-footer {
+    border-top: 1px solid #dee2e6;
+    border-radius: 0 0 0.5rem 0.5rem;
+  }
+
+  // Loading spinner
+  .spinner-border {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+
+  // Empty state
+  .text-muted {
+    color: #6c757d !important;
+  }
+
+  // Responsive adjustments
+  @media (max-width: 768px) {
+    .table-responsive {
+      font-size: 0.875rem;
+    }
+    
+    .btn-group .btn {
+      padding: 0.25rem 0.5rem;
+      font-size: 0.875rem;
+    }
+    
+    .badge {
+      font-size: 0.625rem;
+      padding: 0.25rem 0.5rem;
+    }
+  }
+
+  // Filter section enhancements
+  .filter-section {
+    background-color: #f8f9fa;
+    border-radius: 0.5rem;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  // Table enhancements
+  .table-hover tbody tr:hover {
+    background-color: rgba(13, 110, 253, 0.05);
+  }
+
+  // Action buttons enhancement
+  .action-buttons {
+    white-space: nowrap;
+  }
+
+  // Status indicator
+  .status-indicator {
+    display: inline-block;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    margin-right: 0.5rem;
+  }
+
+  // Due date warning
+  .text-danger {
+    font-weight: 600;
+  }
+
+  // Description truncation
+  .description-truncate {
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  // Card header icons
+  .card-header i {
+    color: #6c757d;
+  }
+
+  // Export button enhancement
+  .btn-success {
+    background-color: #198754;
+    border-color: #198754;
+    
+    &:hover {
+      background-color: #157347;
+      border-color: #146c43;
+    }
+  }
+} 

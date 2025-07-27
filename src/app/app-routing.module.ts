@@ -36,6 +36,11 @@ const routes: Routes = [
         path: 'tickets',
         loadComponent: () => import('./demo/tickets/tickets.component').then((m)=>m.TicketsComponent),
         canActivate: [AuthGuard]
+      },
+      {
+        path: 'ticket-listing',
+        loadComponent: () => import('./demo/tickets/ticket-listing/ticket-listing.component').then((m)=>m.TicketListingComponent),
+        canActivate: [AuthGuard]
       }
     
     ]

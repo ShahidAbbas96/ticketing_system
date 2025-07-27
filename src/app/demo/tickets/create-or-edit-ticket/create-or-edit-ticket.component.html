@@ -82,7 +82,7 @@
           <div class="row mb-3">
             <div class="col-12">
               <label for="description" class="form-label">Description</label>
-              <input id="description" formControlName="closingValue" class="form-control" placeholder="Enter description" >
+              <input id="description" formControlName="description" class="form-control" placeholder="Enter description" >
               <div *ngIf="ticketForm.get('description')?.invalid && ticketForm.get('description')?.touched" class="text-danger">
                 Description is required
               </div>

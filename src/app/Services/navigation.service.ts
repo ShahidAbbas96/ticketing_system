@@ -55,6 +55,14 @@ export class NavigationService {
             url: '/tickets',
             icon: 'icon-ticket',
             hidden:false
+          },
+          {
+            id: 'ticket-listing',
+            title: 'Ticket Listing',
+            type: 'item',
+            url: '/ticket-listing',
+            icon: 'icon-list',
+            hidden:false
           }
         ]
       }

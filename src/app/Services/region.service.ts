@@ -13,10 +13,10 @@ export class RegionService {
 
   constructor(private http: HttpClient) {}
 
-  getAllRegions(searchString?: string): Observable<ResponseModel> {
+  getAllRegions(searchString?: string, pageNo: number = 1, pageSize: number = 100): Observable<ResponseModel> {
     let params = new HttpParams()
-      .set('pageNo',1)
-      .set('pageSize', 1000);
+      .set('pageNo', pageNo.toString())
+      .set('pageSize', pageSize.toString());
 
     if (searchString) {
       params = params.set('searchString', searchString);
